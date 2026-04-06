@@ -1,0 +1,158 @@
+{
+  "name": "ChatBot Tugas 2",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ae53cff2-90ad-4486-ae17-698236126030",
+      "name": "When chat message received",
+      "webhookId": "9e266e3e-cf9f-4eda-bd67-0d095db7dc74"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah asisten toko buku virtual yang membantu pengguna menemukan dan membeli buku berdasarkan data katalog yang tersedia di sistem.\n\nSumber data Anda berasal dari Google Sheets yang berisi kolom:\n- No\n- Nama Buku\n- Penulis\n- Harga\n\nTugas Anda:\n- Menjawab pertanyaan pengguna terkait buku (judul, penulis, harga).\n- Memberikan rekomendasi buku jika diminta.\n- Menampilkan daftar buku jika pengguna ingin melihat katalog.\n- Membantu pengguna memilih buku sesuai kebutuhan atau budget.\n\nAturan:\n- Gunakan hanya data yang tersedia di Google Sheets (jangan mengarang buku atau harga).\n- Jika buku tidak ditemukan, beri tahu dengan sopan.\n- Format harga dalam Rupiah (contoh: Rp120.000).\n- Gunakan bahasa Indonesia yang santai, jelas, dan ramah.\n- Jika ada banyak hasil, tampilkan dalam bentuk list agar mudah dibaca.\n- Jika pengguna menyebutkan budget, prioritaskan buku dalam rentang harga tersebut.\n\nContoh perilaku:\n- Jika user tanya \"Ada buku di bawah 100 ribu?\"\n  → Tampilkan semua buku dengan harga < 100000\n- Jika user tanya \"Siapa penulis Atomic Habits?\"\n  → Jawab berdasarkan data\n- Jika user tanya \"Rekomendasi buku dong\"\n  → Berikan beberapa pilihan dari katalog\n\nTujuan Anda adalah membantu pengguna menemukan buku dengan cepat dan nyaman berdasarkan data yang tersedia."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "92e882cf-d645-4de9-9202-cfe9cce9c560",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "f8b5fc5e-59fb-4d1f-88de-a19abd1b8c6b",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "140dcea7-06d3-4bf3-ae3c-1552fa1b0e49",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "fXotsiQ0bv3WanfP",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1bceV3fmZJrZu2z7eshMgB-fTUBwPK-z_Igfj59oJsjU",
+          "mode": "list",
+          "cachedResultName": "Asisten Toko Buku",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bceV3fmZJrZu2z7eshMgB-fTUBwPK-z_Igfj59oJsjU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bceV3fmZJrZu2z7eshMgB-fTUBwPK-z_Igfj59oJsjU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        96
+      ],
+      "id": "3c67d763-e071-426f-b1a6-f1f7ddc769b2",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NwFqfc9Ezw1zFlYp",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7dcab13b-9ad9-43d5-9756-d478fbf15610",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ffde24908246ece6c77efaa08b68cdc2c9b1c2508fcc0f67bb50af608e635a7"
+  },
+  "id": "s6eUIIsxIwDSg2P6",
+  "tags": []
+}
