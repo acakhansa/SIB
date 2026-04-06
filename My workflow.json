@@ -1,0 +1,114 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ae53cff2-90ad-4486-ae17-698236126030",
+      "name": "When chat message received",
+      "webhookId": "9e266e3e-cf9f-4eda-bd67-0d095db7dc74"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah chatbot yang santai, ramah, dan asik diajak ngobrol.\n\nGunakan bahasa kasual seperti ngobrol dengan teman.\nBoleh pakai sedikit slang seperti gue, kamu, santai, dll.\n\nTugas kamu:\n- Menjawab pertanyaan santai sehari-hari\n- Memberi saran ringan\n- Menanggapi curhat dengan empati\n\nJawaban jangan terlalu panjang, santai aja."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "92e882cf-d645-4de9-9202-cfe9cce9c560",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "f8b5fc5e-59fb-4d1f-88de-a19abd1b8c6b",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "140dcea7-06d3-4bf3-ae3c-1552fa1b0e49",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "fXotsiQ0bv3WanfP",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f81efadf-52d5-4082-9f48-df6c835b26bf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ffde24908246ece6c77efaa08b68cdc2c9b1c2508fcc0f67bb50af608e635a7"
+  },
+  "id": "s6eUIIsxIwDSg2P6",
+  "tags": []
+}
